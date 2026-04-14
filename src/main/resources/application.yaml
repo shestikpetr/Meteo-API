@@ -1,3 +1,83 @@
 spring:
   application:
     name: MeteoAPI
+
+  # Основной DataSource - локальная БД, используется JPA и Jmix
+  datasource:
+    url: jdbc:mysql://${LOCAL_DB_HOST:localhost}:${LOCAL_DB_PORT:3306}/${LOCAL_DB_NAME:meteo_local}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=utf8
+    username: ${LOCAL_DB_USER:root}
+    password: ${LOCAL_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 15
+      idle-timeout: 600000
+      connection-timeout: 30000
+      pool-name: LocalDbHikariPool
+
+  jpa:
+    database-platform: io.jmix.eclipselink.dialect.MySQL8JmixDialect
+    open-in-view: false
+    properties:
+      eclipselink:
+        weaving: static
+
+  # Миграции схемы - Flyway (вместо дефолтного Liquibase из Jmix)
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+
+  liquibase:
+    enabled: false
+
+  sql:
+    init:
+      mode: never
+
+server:
+  port: ${SERVER_PORT:8085}
+  servlet:
+    context-path: /
+
+# Удалённая БД с показаниями датчиков - только JdbcTemplate, без JPA
+app:
+  sensor-datasource:
+    url: jdbc:mysql://${SENSOR_DB_HOST:}:${SENSOR_DB_PORT:3306}/${SENSOR_DB_NAME:}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${SENSOR_DB_USER:}
+    password: ${SENSOR_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jwt:
+    secret: ${JWT_SECRET:dev-secret-key-change-in-production-must-be-long-enough-for-hs256}
+    access-token-expiration: ${JWT_ACCESS_TTL:86400}
+    refresh-token-expiration: ${JWT_REFRESH_TTL:2592000}
+
+jmix:
+  core:
+    project-id: meteoapi
+    available-locales: ru;en
+  ui:
+    main-view-id: MainView
+  data:
+    create-db: false
+  liquibase:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    root: INFO
+    com.shestikpetr.meteoapi: DEBUG
+    org.eclipse.persistence.session: WARN
+    io.jmix: INFO
