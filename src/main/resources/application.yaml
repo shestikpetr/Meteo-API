@@ -37,6 +37,11 @@ spring:
     init:
       mode: never
 
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
+
 server:
   port: ${SERVER_PORT:8085}
   servlet:
