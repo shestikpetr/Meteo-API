@@ -1,7 +1,5 @@
 package com.shestikpetr.meteoapi.entity
 
-import io.jmix.core.metamodel.annotation.InstanceName
-import io.jmix.core.metamodel.annotation.JmixEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
@@ -11,7 +9,6 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.math.BigDecimal
 
-@JmixEntity
 @Entity
 @Table(name = "stations")
 class Station : TimestampedEntity() {
@@ -21,7 +18,6 @@ class Station : TimestampedEntity() {
     @Column(name = "station_number", nullable = false, length = 20, unique = true)
     var stationNumber: String? = null
 
-    @InstanceName
     @NotBlank
     @Size(max = 100)
     @Column(name = "name", nullable = false, length = 100)

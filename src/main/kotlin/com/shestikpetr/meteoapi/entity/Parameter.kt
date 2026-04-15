@@ -1,7 +1,5 @@
 package com.shestikpetr.meteoapi.entity
 
-import io.jmix.core.metamodel.annotation.InstanceName
-import io.jmix.core.metamodel.annotation.JmixEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Lob
@@ -9,7 +7,6 @@ import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
-@JmixEntity
 @Entity
 @Table(name = "parameters")
 class Parameter : BaseEntity() {
@@ -19,7 +16,6 @@ class Parameter : BaseEntity() {
     @Column(name = "code", nullable = false, length = 20, unique = true)
     var code: String? = null
 
-    @InstanceName
     @NotBlank
     @Size(max = 100)
     @Column(name = "name", nullable = false, length = 100)

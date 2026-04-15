@@ -2,7 +2,7 @@ spring:
   application:
     name: MeteoAPI
 
-  # Основной DataSource - локальная БД, используется JPA и Jmix
+  # локальная БД пользователей, станций, параметров
   datasource:
     url: jdbc:mysql://${LOCAL_DB_HOST:localhost}:${LOCAL_DB_PORT:3306}/${LOCAL_DB_NAME:meteo_local}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=utf8
     username: ${LOCAL_DB_USER:root}
@@ -16,22 +16,20 @@ spring:
       pool-name: LocalDbHikariPool
 
   jpa:
-    database-platform: io.jmix.eclipselink.dialect.MySQL8JmixDialect
+    hibernate:
+      ddl-auto: validate
     open-in-view: false
     properties:
-      eclipselink:
-        weaving: static
+      hibernate:
+        jdbc:
+          time_zone: UTC
 
-  # Миграции схемы - Flyway (вместо дефолтного Liquibase из Jmix)
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
     baseline-version: 0
     validate-on-migrate: true
-
-  liquibase:
-    enabled: false
 
   sql:
     init:
@@ -47,7 +45,7 @@ server:
   servlet:
     context-path: /
 
-# Удалённая БД с показаниями датчиков - только JdbcTemplate, без JPA
+# удалённая БД с показаниями датчиков
 app:
   sensor-datasource:
     url: jdbc:mysql://${SENSOR_DB_HOST:}:${SENSOR_DB_PORT:3306}/${SENSOR_DB_NAME:}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
@@ -59,17 +57,6 @@ app:
     secret: ${JWT_SECRET:dev-secret-key-change-in-production-must-be-long-enough-for-hs256}
     access-token-expiration: ${JWT_ACCESS_TTL:86400}
     refresh-token-expiration: ${JWT_REFRESH_TTL:2592000}
-
-jmix:
-  core:
-    project-id: meteoapi
-    available-locales: ru;en
-  ui:
-    main-view-id: MainView
-  data:
-    create-db: false
-  liquibase:
-    enabled: false
 
 management:
   endpoints:
@@ -84,5 +71,4 @@ logging:
   level:
     root: INFO
     com.shestikpetr.meteoapi: DEBUG
-    org.eclipse.persistence.session: WARN
-    io.jmix: INFO
+    org.hibernate.SQL: WARN

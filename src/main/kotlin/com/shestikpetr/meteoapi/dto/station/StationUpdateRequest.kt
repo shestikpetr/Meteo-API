@@ -21,6 +21,5 @@ data class StationUpdateRequest(
     val longitude: BigDecimal? = null,
 
     val altitude: BigDecimal? = null,
-
     val isActive: Boolean? = null,
 )

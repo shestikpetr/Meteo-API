@@ -1,9 +1,5 @@
 package com.shestikpetr.meteoapi.entity
 
-import io.jmix.core.entity.annotation.SystemLevel
-import io.jmix.core.metamodel.annotation.DependsOnProperties
-import io.jmix.core.metamodel.annotation.InstanceName
-import io.jmix.core.metamodel.annotation.JmixEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -16,7 +12,6 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.Instant
 
-@JmixEntity
 @Entity
 @Table(
     name = "user_stations",
@@ -41,20 +36,11 @@ class UserStation : BaseEntity() {
     @Column(name = "is_favorite", nullable = false)
     var isFavorite: Boolean = false
 
-    @SystemLevel
     @Column(name = "created_at", updatable = false, nullable = false)
     var createdAt: Instant? = null
 
     @PrePersist
     fun onCreate() {
         createdAt = Instant.now()
-    }
-
-    @InstanceName
-    @DependsOnProperties("user", "station", "customName")
-    fun getCaption(): String {
-        val userPart = user?.username ?: "?"
-        val stationPart = customName?.takeIf { it.isNotBlank() } ?: station?.name ?: "?"
-        return "$userPart — $stationPart"
     }
 }

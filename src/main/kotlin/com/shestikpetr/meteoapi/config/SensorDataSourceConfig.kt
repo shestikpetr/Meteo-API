@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.simple.JdbcClient
 import javax.sql.DataSource
 
 @Configuration
@@ -19,20 +19,19 @@ class SensorDataSourceConfig {
         return ds
     }
 
-    @Bean(name = ["sensorJdbcTemplate"])
-    fun sensorJdbcTemplate(
+    @Bean(name = ["sensorJdbcClient"])
+    fun sensorJdbcClient(
         @Qualifier("sensorDataSource") ds: DataSource,
-    ): JdbcTemplate = JdbcTemplate(ds)
+    ): JdbcClient = JdbcClient.create(ds)
 
-    private fun buildHikariDataSource(props: SensorDataSourceProperties): HikariDataSource =
-        DataSourceBuilder
-            .create()
-            .type(HikariDataSource::class.java)
-            .driverClassName(props.driverClassName)
-            .url(props.url)
-            .username(props.username)
-            .password(props.password)
-            .build() as HikariDataSource
+    private fun buildHikariDataSource(props: SensorDataSourceProperties): HikariDataSource = DataSourceBuilder
+        .create()
+        .type(HikariDataSource::class.java)
+        .driverClassName(props.driverClassName)
+        .url(props.url)
+        .username(props.username)
+        .password(props.password)
+        .build()
 
     private fun applyPoolSettings(ds: HikariDataSource) {
         ds.minimumIdle = 2

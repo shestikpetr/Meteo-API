@@ -7,11 +7,23 @@ interface UserStationRepository : JpaRepository<UserStation, Int> {
 
     fun findByUserId(userId: Int): List<UserStation>
 
-    fun findByUserIdAndStationId(userId: Int, stationId: Int): UserStation?
+    fun findByUserIdAndStationId(
+        userId: Int,
+        stationId: Int,
+    ): UserStation?
 
-    fun findByUserIdAndStationStationNumber(userId: Int, stationNumber: String): UserStation?
+    fun findByUserIdAndStationStationNumber(
+        userId: Int,
+        stationNumber: String,
+    ): UserStation?
 
-    fun existsByUserIdAndStationId(userId: Int, stationId: Int): Boolean
+    fun existsByUserIdAndStationId(
+        userId: Int,
+        stationId: Int,
+    ): Boolean
 
-    fun deleteByUserIdAndStationId(userId: Int, stationId: Int)
+    fun deleteByUserIdAndStationId(
+        userId: Int,
+        stationId: Int,
+    )
 }

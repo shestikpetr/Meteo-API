@@ -10,8 +10,7 @@ enum class UserRole(
     ;
 
     companion object {
-        fun fromValue(raw: String): UserRole =
-            entries.firstOrNull { it.value.equals(raw, ignoreCase = true) }
-                ?: throw IllegalArgumentException("Неизвестная роль: $raw")
+        fun fromValue(raw: String): UserRole = entries.firstOrNull { it.value.equals(raw, ignoreCase = true) }
+            ?: throw IllegalArgumentException("Неизвестная роль: $raw")
     }
 }

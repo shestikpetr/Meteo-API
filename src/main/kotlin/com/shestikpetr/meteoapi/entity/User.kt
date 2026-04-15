@@ -1,8 +1,5 @@
 package com.shestikpetr.meteoapi.entity
 
-import io.jmix.core.entity.annotation.SystemLevel
-import io.jmix.core.metamodel.annotation.InstanceName
-import io.jmix.core.metamodel.annotation.JmixEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
@@ -11,12 +8,10 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
-@JmixEntity
 @Entity
 @Table(name = "users")
 class User : TimestampedEntity() {
 
-    @InstanceName
     @NotBlank
     @Size(min = 3, max = 50)
     @Pattern(regexp = "^[a-zA-Z0-9_]+$")
@@ -29,7 +24,6 @@ class User : TimestampedEntity() {
     @Column(name = "email", nullable = false, length = 255, unique = true)
     var email: String? = null
 
-    @SystemLevel
     @NotBlank
     @Size(max = 255)
     @Column(name = "password_hash", nullable = false, length = 255)

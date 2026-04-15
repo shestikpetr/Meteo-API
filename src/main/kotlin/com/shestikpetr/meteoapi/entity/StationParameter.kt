@@ -1,8 +1,5 @@
 package com.shestikpetr.meteoapi.entity
 
-import io.jmix.core.metamodel.annotation.DependsOnProperties
-import io.jmix.core.metamodel.annotation.InstanceName
-import io.jmix.core.metamodel.annotation.JmixEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -14,7 +11,6 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
-@JmixEntity
 @Entity
 @Table(
     name = "station_parameters",
@@ -39,8 +35,4 @@ class StationParameter : BaseEntity() {
 
     @Column(name = "is_active", nullable = false)
     var isActive: Boolean = true
-
-    @InstanceName
-    @DependsOnProperties("station", "parameterCode")
-    fun getCaption(): String = "${station?.name ?: "?"} / ${parameterCode ?: "?"}"
 }
