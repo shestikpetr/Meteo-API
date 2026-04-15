@@ -2,9 +2,12 @@ package com.shestikpetr.meteoapi.dto.common
 
 import com.fasterxml.jackson.annotation.JsonValue
 
-enum class UserRole(@get:JsonValue val value: String) {
+enum class UserRole(
+    @get:JsonValue val value: String,
+) {
     USER("user"),
-    ADMIN("admin");
+    ADMIN("admin"),
+    ;
 
     companion object {
         fun fromValue(raw: String): UserRole =

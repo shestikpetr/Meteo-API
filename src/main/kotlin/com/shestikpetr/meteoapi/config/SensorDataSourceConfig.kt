@@ -20,11 +20,13 @@ class SensorDataSourceConfig {
     }
 
     @Bean(name = ["sensorJdbcTemplate"])
-    fun sensorJdbcTemplate(@Qualifier("sensorDataSource") ds: DataSource): JdbcTemplate =
-        JdbcTemplate(ds)
+    fun sensorJdbcTemplate(
+        @Qualifier("sensorDataSource") ds: DataSource,
+    ): JdbcTemplate = JdbcTemplate(ds)
 
     private fun buildHikariDataSource(props: SensorDataSourceProperties): HikariDataSource =
-        DataSourceBuilder.create()
+        DataSourceBuilder
+            .create()
             .type(HikariDataSource::class.java)
             .driverClassName(props.driverClassName)
             .url(props.url)

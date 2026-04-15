@@ -5,6 +5,7 @@ plugins {
     id("org.springframework.boot") version "3.5.11"
     id("io.spring.dependency-management") version "1.1.7"
     id("io.jmix") version "2.8.0"
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "com.shestikpetr"
@@ -91,5 +92,20 @@ tasks.withType<Test> {
 tasks.processResources {
     from("migrations") {
         into("db/migration")
+    }
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktlint("1.3.1").editorConfigOverride(
+            mapOf(
+                "ktlint_standard_property-naming" to "disabled",
+            ),
+        )
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint("1.3.1")
     }
 }

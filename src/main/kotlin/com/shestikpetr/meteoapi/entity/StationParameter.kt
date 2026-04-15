@@ -18,10 +18,12 @@ import jakarta.validation.constraints.Size
 @Entity
 @Table(
     name = "station_parameters",
-    uniqueConstraints = [UniqueConstraint(
-        name = "unique_station_parameter",
-        columnNames = ["station_id", "parameter_code"]
-    )],
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "unique_station_parameter",
+            columnNames = ["station_id", "parameter_code"],
+        ),
+    ],
 )
 class StationParameter : BaseEntity() {
 
