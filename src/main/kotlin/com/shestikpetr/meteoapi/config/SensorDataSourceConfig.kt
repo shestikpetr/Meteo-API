@@ -14,7 +14,7 @@ class SensorDataSourceConfig {
     @Bean(name = ["sensorDataSource"])
     fun sensorDataSource(props: SensorDataSourceProperties): DataSource {
         val ds = buildHikariDataSource(props)
-        applyPoolSettings(ds)
+        applyPoolSettings(ds, props.hikari)
 
         return ds
     }
@@ -33,10 +33,13 @@ class SensorDataSourceConfig {
         .password(props.password)
         .build()
 
-    private fun applyPoolSettings(ds: HikariDataSource) {
-        ds.minimumIdle = 2
-        ds.maximumPoolSize = 10
-        ds.poolName = "SensorDbHikariPool"
-        ds.connectionTimeout = 30_000
+    private fun applyPoolSettings(
+        ds: HikariDataSource,
+        settings: SensorDataSourceProperties.Hikari,
+    ) {
+        ds.minimumIdle = settings.minimumIdle
+        ds.maximumPoolSize = settings.maximumPoolSize
+        ds.poolName = settings.poolName
+        ds.connectionTimeout = settings.connectionTimeoutMs
     }
 }

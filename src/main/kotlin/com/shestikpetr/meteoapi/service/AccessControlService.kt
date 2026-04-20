@@ -12,11 +12,6 @@ class AccessControlService(
     private val userStationRepository: UserStationRepository,
 ) {
 
-    fun hasAccess(
-        userId: Int,
-        stationNumber: String,
-    ): Boolean = findAccess(userId, stationNumber) != null
-
     fun findAccess(
         userId: Int,
         stationNumber: String,

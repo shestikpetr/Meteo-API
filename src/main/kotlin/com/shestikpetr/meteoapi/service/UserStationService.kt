@@ -1,6 +1,5 @@
 package com.shestikpetr.meteoapi.service
 
-import com.shestikpetr.meteoapi.dto.station.StationResponse
 import com.shestikpetr.meteoapi.dto.station.UserStationRequest
 import com.shestikpetr.meteoapi.dto.station.UserStationResponse
 import com.shestikpetr.meteoapi.dto.station.UserStationUpdateRequest
@@ -12,6 +11,7 @@ import com.shestikpetr.meteoapi.exception.NotFoundException
 import com.shestikpetr.meteoapi.repository.StationRepository
 import com.shestikpetr.meteoapi.repository.UserRepository
 import com.shestikpetr.meteoapi.repository.UserStationRepository
+import com.shestikpetr.meteoapi.service.mapper.UserStationMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -32,7 +32,7 @@ class UserStationService(
         requireNotAlreadyAttached(userId, station.id!!)
         val user = loadUserById(userId)
         val link = userStationRepository.save(newLink(user, station, request))
-        return toUserStationResponse(link)
+        return UserStationMapper.toResponse(link)
     }
 
     fun detach(
@@ -50,13 +50,13 @@ class UserStationService(
     ): UserStationResponse {
         val link = accessControlService.requireAccess(userId, stationNumber)
         applyUpdates(link, request)
-        return toUserStationResponse(userStationRepository.save(link))
+        return UserStationMapper.toResponse(userStationRepository.save(link))
     }
 
     @Transactional(readOnly = true)
     fun list(userId: Int): List<UserStationResponse> = userStationRepository
         .findByUserId(userId)
-        .map(::toUserStationResponse)
+        .map(UserStationMapper::toResponse)
 
     private fun requireNotAlreadyAttached(
         userId: Int,
@@ -93,30 +93,4 @@ class UserStationService(
         if (request.customName != null) link.customName = request.customName
         if (request.isFavorite != null) link.isFavorite = request.isFavorite
     }
-
-    private fun toUserStationResponse(link: UserStation): UserStationResponse {
-        val station = link.station!!
-        return UserStationResponse(
-            id = link.id!!,
-            userId = link.user!!.id!!,
-            stationId = station.id!!,
-            customName = link.customName,
-            isFavorite = link.isFavorite,
-            createdAt = link.createdAt,
-            station = toStationResponse(station),
-        )
-    }
-
-    private fun toStationResponse(station: Station): StationResponse = StationResponse(
-        id = station.id!!,
-        stationNumber = station.stationNumber!!,
-        name = station.name!!,
-        location = station.location,
-        latitude = station.latitude,
-        longitude = station.longitude,
-        altitude = station.altitude,
-        isActive = station.isActive,
-        createdAt = station.createdAt,
-        updatedAt = station.updatedAt,
-    )
 }

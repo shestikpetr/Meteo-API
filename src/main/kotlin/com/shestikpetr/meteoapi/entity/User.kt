@@ -1,10 +1,13 @@
 package com.shestikpetr.meteoapi.entity
 
+import com.shestikpetr.meteoapi.dto.common.UserRole
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
@@ -32,8 +35,8 @@ class User : TimestampedEntity() {
     @Column(name = "is_active", nullable = false)
     var isActive: Boolean = true
 
-    @NotBlank
-    @Pattern(regexp = "^(user|admin)$")
+    @NotNull
+    @Convert(converter = UserRoleConverter::class)
     @Column(name = "role", nullable = false, length = 20)
-    var role: String = "user"
+    var role: UserRole = UserRole.USER
 }

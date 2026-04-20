@@ -52,6 +52,16 @@ app:
     username: ${SENSOR_DB_USER:}
     password: ${SENSOR_DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: ${SENSOR_DB_POOL_MIN_IDLE:2}
+      maximum-pool-size: ${SENSOR_DB_POOL_MAX:10}
+      pool-name: SensorDbHikariPool
+      connection-timeout-ms: ${SENSOR_DB_CONN_TIMEOUT_MS:30000}
+
+  # Параметры выборки показаний из sensor-БД.
+  sensor-query:
+    # Значения <= порога считаются служебной заглушкой («нет данных») и отфильтровываются.
+    invalid-value-threshold: ${SENSOR_INVALID_VALUE_THRESHOLD:-100}
 
   jwt:
     secret: ${JWT_SECRET:dev-secret-key-change-in-production-must-be-long-enough-for-hs256}

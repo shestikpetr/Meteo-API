@@ -36,6 +36,7 @@ class AuthService(
         return issueLoginData(user)
     }
 
+    @Transactional(readOnly = true)
     fun refresh(request: RefreshTokenRequest): RefreshTokenData {
         val claims = jwtService.parseRefreshToken(request.refreshToken)
         val user = loadActiveUserFromClaims(claims)

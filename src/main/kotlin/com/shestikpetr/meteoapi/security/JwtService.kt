@@ -1,5 +1,6 @@
 package com.shestikpetr.meteoapi.security
 
+import com.shestikpetr.meteoapi.dto.common.UserRole
 import com.shestikpetr.meteoapi.exception.AuthenticationException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtException
@@ -22,13 +23,13 @@ class JwtService(
     fun generateAccessToken(
         userId: Int,
         username: String,
-        role: String,
+        role: UserRole,
     ): String = buildToken(
         subject = userId.toString(),
         ttlSeconds = properties.accessTokenExpiration,
         extraClaims = mapOf(
             CLAIM_USERNAME to username,
-            CLAIM_ROLE to role,
+            CLAIM_ROLE to role.value,
             CLAIM_TYPE to TYPE_ACCESS,
         ),
     )
@@ -73,10 +74,9 @@ class JwtService(
             .build()
             .parseSignedClaims(token)
             .payload
-    } catch (e: JwtException) {
-        throw AuthenticationException("Недействительный или просроченный токен")
-    } catch (e: IllegalArgumentException) {
-        throw AuthenticationException("Недействительный или просроченный токен")
+    } catch (e: RuntimeException) {
+        if (e !is JwtException && e !is IllegalArgumentException) throw e
+        throw AuthenticationException(INVALID_TOKEN_MESSAGE)
     }
 
     private fun requireTokenType(
@@ -85,7 +85,7 @@ class JwtService(
     ) {
         val actualType = claims[CLAIM_TYPE] as? String
         if (actualType != expectedType) {
-            throw AuthenticationException("Ожидался токен типа $expectedType, получен $actualType")
+            throw AuthenticationException(INVALID_TOKEN_MESSAGE)
         }
     }
 
@@ -95,5 +95,6 @@ class JwtService(
         const val CLAIM_TYPE = "type"
         const val TYPE_ACCESS = "access"
         const val TYPE_REFRESH = "refresh"
+        const val INVALID_TOKEN_MESSAGE = "Недействительный или просроченный токен"
     }
 }

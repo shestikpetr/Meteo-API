@@ -8,4 +8,13 @@ data class SensorDataSourceProperties(
     val username: String,
     val password: String,
     val driverClassName: String,
-)
+    val hikari: Hikari,
+) {
+
+    data class Hikari(
+        val minimumIdle: Int,
+        val maximumPoolSize: Int,
+        val poolName: String,
+        val connectionTimeoutMs: Long,
+    )
+}

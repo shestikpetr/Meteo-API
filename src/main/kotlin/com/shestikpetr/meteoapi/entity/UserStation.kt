@@ -5,19 +5,17 @@ import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.PrePersist
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import java.time.Instant
 
 @Entity
 @Table(
     name = "user_stations",
     uniqueConstraints = [UniqueConstraint(name = "unique_user_station", columnNames = ["user_id", "station_id"])],
 )
-class UserStation : BaseEntity() {
+class UserStation : TimestampedEntity() {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -35,12 +33,4 @@ class UserStation : BaseEntity() {
 
     @Column(name = "is_favorite", nullable = false)
     var isFavorite: Boolean = false
-
-    @Column(name = "created_at", updatable = false, nullable = false)
-    var createdAt: Instant? = null
-
-    @PrePersist
-    fun onCreate() {
-        createdAt = Instant.now()
-    }
 }
