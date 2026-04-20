@@ -84,16 +84,13 @@ class AuthService(
     }
 
     private fun loadActiveUserFromClaims(claims: Claims): User {
-        val userId = extractUserId(claims)
+        val userId = jwtService.extractUserId(claims)
         val user = userRepository.findById(userId).orElseThrow {
             AuthenticationException("Пользователь не найден")
         }
         ensureActive(user)
         return user
     }
-
-    private fun extractUserId(claims: Claims): Int = claims.subject?.toIntOrNull()
-        ?: throw AuthenticationException("Некорректный subject в refresh-токене")
 
     private fun issueLoginData(user: User): AuthLoginData = AuthLoginData(
         userId = user.id!!,

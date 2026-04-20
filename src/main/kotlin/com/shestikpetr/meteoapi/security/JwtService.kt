@@ -44,6 +44,26 @@ class JwtService(
 
     fun parseRefreshToken(token: String): Claims = parseTokenOfType(token, TYPE_REFRESH)
 
+    fun extractUserId(claims: Claims): Int = claims.subject?.toIntOrNull()
+        ?: throw AuthenticationException(INVALID_TOKEN_MESSAGE)
+
+    fun readPrincipalFromAccessToken(accessToken: String): UserPrincipal {
+        val claims = parseAccessToken(accessToken)
+        return UserPrincipal(
+            userId = extractUserId(claims),
+            username = extractUsername(claims),
+            role = extractRole(claims),
+        )
+    }
+
+    private fun extractUsername(claims: Claims): String = (claims[CLAIM_USERNAME] as? String)
+        ?: throw AuthenticationException(INVALID_TOKEN_MESSAGE)
+
+    private fun extractRole(claims: Claims): UserRole {
+        val raw = (claims[CLAIM_ROLE] as? String) ?: throw AuthenticationException(INVALID_TOKEN_MESSAGE)
+        return runCatching { UserRole.fromValue(raw) }.getOrElse { throw AuthenticationException(INVALID_TOKEN_MESSAGE) }
+    }
+
     private fun buildToken(
         subject: String,
         ttlSeconds: Long,
