@@ -4,16 +4,16 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
 @Entity
 @Table(name = "parameters")
 class Parameter : BaseEntity() {
 
-    @NotBlank
-    @Size(max = 20)
-    @Column(name = "code", nullable = false, length = 20, unique = true)
-    var code: String? = null
+    @NotNull
+    @Column(name = "code", nullable = false, unique = true)
+    var code: Int? = null
 
     @NotBlank
     @Size(max = 100)

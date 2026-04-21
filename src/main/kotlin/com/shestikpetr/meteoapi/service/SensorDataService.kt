@@ -39,7 +39,7 @@ class SensorDataService(
     fun history(
         userId: Int,
         stationNumber: String,
-        parameterCode: String,
+        parameterCode: Int,
         startTime: Long?,
         endTime: Long?,
     ): ParameterHistoryResponse {
@@ -58,13 +58,13 @@ class SensorDataService(
 
     private fun buildParameterWithValue(
         stationNumber: String,
-        code: String,
+        code: Int,
         metadata: Parameter?,
     ): ParameterWithValue {
         val point = sensorRepository.findLatestPoint(stationNumber, code)
         return ParameterWithValue(
             code = code,
-            name = metadata?.name ?: code,
+            name = metadata?.name ?: code.toString(),
             value = point?.value,
             time = point?.time,
             unit = metadata?.unit,
@@ -86,13 +86,13 @@ class SensorDataService(
         parameters = values,
     )
 
-    private fun activeParameterCodes(stationNumber: String): List<String> = stationParameterRepository
+    private fun activeParameterCodes(stationNumber: String): List<Int> = stationParameterRepository
         .findByStationStationNumberAndIsActiveTrue(stationNumber)
         .mapNotNull { it.parameterCode }
 
     private fun requireActiveOnStation(
         stationNumber: String,
-        parameterCode: String,
+        parameterCode: Int,
     ) {
         if (parameterCode !in activeParameterCodes(stationNumber)) {
             throw NotFoundException("Параметр $parameterCode не активен на станции $stationNumber")
@@ -108,5 +108,5 @@ class SensorDataService(
         }
     }
 
-    private fun Parameter.requireCode(): String = code ?: error("Parameter без code")
+    private fun Parameter.requireCode(): Int = code ?: error("Parameter без code")
 }

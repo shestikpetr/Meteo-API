@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface ParameterRepository : JpaRepository<Parameter, Int> {
 
-    fun findByCode(code: String): Parameter?
+    fun findByCode(code: Int): Parameter?
 
-    fun findAllByCodeIn(codes: Collection<String>): List<Parameter>
+    fun findAllByCodeIn(codes: Collection<Int>): List<Parameter>
 }

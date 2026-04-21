@@ -30,7 +30,7 @@ class StationParametersService(
         return parameterRepository.findAllByCodeIn(activeCodes).map(ParameterMapper::toMetadata)
     }
 
-    private fun findActiveParameterCodes(stationNumber: String): List<String> = stationParameterRepository
+    private fun findActiveParameterCodes(stationNumber: String): List<Int> = stationParameterRepository
         .findByStationStationNumberAndIsActiveTrue(stationNumber)
         .mapNotNull { it.parameterCode }
 }

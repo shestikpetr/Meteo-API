@@ -15,10 +15,10 @@ class SensorRepository(
 
     fun findLatestPoint(
         stationNumber: String,
-        parameterCode: String,
+        parameterCode: Int,
     ): TimeSeriesPoint? {
         val table = safeIdentifier(stationNumber)
-        val column = safeIdentifier(parameterCode)
+        val column = safeColumnForCode(parameterCode)
         return sensorJdbcClient
             .sql(latestPointSql(table, column))
             .query(POINT_ROW_MAPPER)
@@ -28,12 +28,12 @@ class SensorRepository(
 
     fun findTimeSeries(
         stationNumber: String,
-        parameterCode: String,
+        parameterCode: Int,
         startTime: Long?,
         endTime: Long?,
     ): List<TimeSeriesPoint> {
         val table = safeIdentifier(stationNumber)
-        val column = safeIdentifier(parameterCode)
+        val column = safeColumnForCode(parameterCode)
         val spec = sensorJdbcClient.sql(timeSeriesSql(table, column, startTime, endTime))
         bindTimeRange(spec, startTime, endTime)
         return spec.query(POINT_ROW_MAPPER).list()
@@ -86,8 +86,13 @@ class SensorRepository(
         return raw
     }
 
+    // Числовой код параметра используется как имя колонки в sensor-БД (в обратных кавычках).
+    private fun safeColumnForCode(code: Int): String {
+        require(code >= 0) { "Код параметра должен быть неотрицательным: $code" }
+        return code.toString()
+    }
+
     private companion object {
-        // MySQL ограничивает идентификаторы 64 символами.
         val SAFE_IDENTIFIER = Regex("^[A-Za-z0-9_]{1,64}$")
 
         val POINT_ROW_MAPPER: RowMapper<TimeSeriesPoint> =
