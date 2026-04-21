@@ -10,5 +10,4 @@ data class StationDataResponse(
     val latitude: BigDecimal? = null,
     val longitude: BigDecimal? = null,
     val parameters: List<ParameterWithValue> = emptyList(),
-    val timestamp: String? = null,
 )

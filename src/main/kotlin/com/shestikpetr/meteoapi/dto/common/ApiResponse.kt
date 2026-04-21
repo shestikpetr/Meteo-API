@@ -10,6 +10,8 @@ data class ApiResponse<T>(
 
         fun <T> ok(data: T): ApiResponse<T> = ApiResponse(success = true, data = data)
 
+        fun empty(): ApiResponse<Unit> = ApiResponse(success = true)
+
         fun <T> error(message: String): ApiResponse<T> = ApiResponse(success = false, error = message)
     }
 }

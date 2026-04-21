@@ -9,5 +9,6 @@ data class UserStationResponse(
     val customName: String? = null,
     val isFavorite: Boolean = false,
     val createdAt: Instant? = null,
+    val updatedAt: Instant? = null,
     val station: StationResponse? = null,
 )

@@ -5,5 +5,4 @@ import com.shestikpetr.meteoapi.dto.sensor.ParameterMetadata
 data class StationParametersResponse(
     val stationNumber: String,
     val parameters: List<ParameterMetadata>,
-    val success: Boolean = true,
 )

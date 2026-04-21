@@ -2,6 +2,9 @@ spring:
   application:
     name: MeteoAPI
 
+  config:
+    import: optional:file:./.env[.properties]
+
   # локальная БД пользователей, станций, параметров
   datasource:
     url: jdbc:mysql://${LOCAL_DB_HOST:localhost}:${LOCAL_DB_PORT:3306}/${LOCAL_DB_NAME:meteo_local}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=utf8
@@ -48,7 +51,7 @@ server:
 # удалённая БД с показаниями датчиков
 app:
   sensor-datasource:
-    url: jdbc:mysql://${SENSOR_DB_HOST:}:${SENSOR_DB_PORT:3306}/${SENSOR_DB_NAME:}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${SENSOR_DB_HOST:}:${SENSOR_DB_PORT:3306}/${SENSOR_DB_NAME:}?useSSL=${SENSOR_DB_USE_SSL:true}&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${SENSOR_DB_USER:}
     password: ${SENSOR_DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver

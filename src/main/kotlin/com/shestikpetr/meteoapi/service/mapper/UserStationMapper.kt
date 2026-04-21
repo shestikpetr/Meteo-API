@@ -15,6 +15,7 @@ object UserStationMapper {
             customName = link.customName,
             isFavorite = link.isFavorite,
             createdAt = link.createdAt,
+            updatedAt = link.updatedAt,
             station = StationMapper.toResponse(station),
         )
     }

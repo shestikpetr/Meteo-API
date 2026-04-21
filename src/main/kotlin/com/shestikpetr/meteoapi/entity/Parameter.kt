@@ -2,7 +2,6 @@ package com.shestikpetr.meteoapi.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.Lob
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
@@ -25,8 +24,7 @@ class Parameter : BaseEntity() {
     @Column(name = "unit", length = 20)
     var unit: String? = null
 
-    @Lob
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     var description: String? = null
 
     @Size(max = 50)

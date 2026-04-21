@@ -19,5 +19,20 @@ services:
       retries: 10
       start_period: 20s
 
+  app:
+    build: .
+    container_name: meteo-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      LOCAL_DB_HOST: mysql
+      LOCAL_DB_PORT: 3306
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+
 volumes:
   meteo-mysql-data:

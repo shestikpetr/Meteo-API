@@ -1,5 +1,6 @@
 val jjwtVersion = "0.12.6"
 val ktlintVersion = "1.5.0"
+val springdocVersion = "3.0.3"
 
 plugins {
     kotlin("jvm") version "2.3.20"
@@ -36,18 +37,21 @@ dependencies {
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("tools.jackson.module:jackson-module-kotlin")
 
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jjwtVersion")
 
+    // OpenAPI / Swagger UI
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
+
     // Драйверы БД
     runtimeOnly("com.mysql:mysql-connector-j")
 
     // Миграции схемы
-    implementation("org.flywaydb:flyway-core")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.flywaydb:flyway-mysql")
 
     // Тесты
@@ -73,6 +77,11 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+// Фиксируем имя bootJar, чтобы Dockerfile не зависел от версии.
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    archiveFileName.set("app.jar")
 }
 
 // Миграции Flyway лежат в /migrations/ (корень проекта)
