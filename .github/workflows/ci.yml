@@ -2,10 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [master]
-    tags: ['v*']
+    branches: [ master ]
+    tags: [ 'v*' ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -16,9 +16,8 @@ jobs:
     name: Сборка и тесты
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # MySQL поднимается как сервис для прогона contextLoads и будущих
-    # интеграционных тестов. Flyway накатит миграции, JPA ddl-auto=validate
-    # проверит соответствие схемы entity-классам.
+    # MySQL поднимается как сервис для прогона contextLoads и будущих интеграционных тестов
+    # Flyway накатит миграции, JPA ddl-auto=validate проверит соответствие схемы entity-классам
     services:
       mysql:
         image: mysql:8.0
@@ -50,9 +49,8 @@ jobs:
       - name: Проверка форматирования (spotless)
         run: ./gradlew --no-daemon spotlessCheck
 
-      # Тестовая конфигурация использует один MySQL и под локальную, и под
-      # sensor-БД: contextLoads не читает sensor-таблицы, ему достаточно
-      # валидного пула. JWT_SECRET подобран длиннее 32 байт для HS256.
+      # Тестовая конфигурация использует один MySQL и под локальную, и под sensor-БД: contextLoads не читает sensor-таблицы, ему достаточно валидного пула
+      # JWT_SECRET подобран длиннее 32 байт для HS256
       - name: Тесты
         env:
           LOCAL_DB_HOST: 127.0.0.1
@@ -124,3 +122,45 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Деплой на прод
+    needs: publish
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # CD: тянем свежий образ с ghcr и перезапускаем app-контейнер на сервере
+    steps:
+      - name: Перезапуск приложения по SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            cd "${{ secrets.DEPLOY_PATH }}"
+            docker compose pull app
+            docker compose up -d app
+            docker image prune -f
+
+      - name: Health-check
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_SSH_PORT || 22 }}
+          script_stop: true
+          # Ждём до 60 секунд, пока /health вернёт 200
+          script: |
+            for i in $(seq 1 30); do
+              if curl -fsS http://localhost:8080/health > /dev/null; then
+                echo "Приложение поднялось"
+                exit 0
+              fi
+              sleep 2
+            done
+            echo "Приложение не отвечает на /health" >&2
+            exit 1
