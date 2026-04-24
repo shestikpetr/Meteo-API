@@ -1,5 +1,6 @@
 package com.shestikpetr.meteoapi.controller
 
+import com.shestikpetr.meteoapi.config.ApiRoutes
 import com.shestikpetr.meteoapi.config.OpenApiConfig
 import com.shestikpetr.meteoapi.dto.common.ApiResponse
 import com.shestikpetr.meteoapi.dto.station.StationParametersResponse
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = OpenApiConfig.TAG_STATIONS)
 @RestController
-@RequestMapping("/stations")
+@RequestMapping(ApiRoutes.STATIONS)
 class StationsController(
     private val userStationService: UserStationService,
     private val stationParametersService: StationParametersService,

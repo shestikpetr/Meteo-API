@@ -1,5 +1,6 @@
 package com.shestikpetr.meteoapi.security
 
+import com.shestikpetr.meteoapi.config.ApiRoutes
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -46,7 +47,7 @@ class SecurityConfig(
 
     private companion object {
         val PUBLIC_PATHS = arrayOf(
-            "/auth/**",
+            "${ApiRoutes.AUTH}/**",
             "/health",
             "/actuator/health",
             "/actuator/info",

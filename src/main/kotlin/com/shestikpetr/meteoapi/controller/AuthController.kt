@@ -1,5 +1,6 @@
 package com.shestikpetr.meteoapi.controller
 
+import com.shestikpetr.meteoapi.config.ApiRoutes
 import com.shestikpetr.meteoapi.config.OpenApiConfig
 import com.shestikpetr.meteoapi.dto.auth.AuthLoginData
 import com.shestikpetr.meteoapi.dto.auth.RefreshTokenData
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = OpenApiConfig.TAG_AUTH)
 @SecurityRequirements
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(ApiRoutes.AUTH)
 class AuthController(
     private val authService: AuthService,
 ) {
