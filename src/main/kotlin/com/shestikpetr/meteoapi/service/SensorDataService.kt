@@ -68,6 +68,7 @@ class SensorDataService(
             value = point?.value,
             time = point?.time,
             unit = metadata?.unit,
+            description = metadata?.description,
         )
     }
 

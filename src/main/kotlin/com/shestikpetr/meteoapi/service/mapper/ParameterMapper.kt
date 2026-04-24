@@ -9,5 +9,6 @@ object ParameterMapper {
         code = parameter.code ?: error("Parameter без code"),
         name = parameter.name ?: error("Parameter без name"),
         unit = parameter.unit,
+        description = parameter.description,
     )
 }
