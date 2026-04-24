@@ -50,6 +50,9 @@ server:
 
 # удалённая БД с показаниями датчиков
 app:
+  # Публичный base-URL API (через nginx с TLS). Попадает в servers[] OpenAPI
+  public-base-url: ${PUBLIC_BASE_URL:}
+
   sensor-datasource:
     url: jdbc:mysql://${SENSOR_DB_HOST:}:${SENSOR_DB_PORT:3306}/${SENSOR_DB_NAME:}?useSSL=${SENSOR_DB_USE_SSL:true}&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${SENSOR_DB_USER:}
@@ -73,7 +76,7 @@ app:
 
 springdoc:
   swagger-ui:
-    # Порядок тегов берётся из OpenApiConfig.orderedTags() — tags-sorter сознательно не задан.
+    # Порядок тегов берётся из OpenApiConfig.orderedTags() - tags-sorter сознательно не задан.
     operations-sorter: alpha
     path: /swagger-ui.html
   api-docs:

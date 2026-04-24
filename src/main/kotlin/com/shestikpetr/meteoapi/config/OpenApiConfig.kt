@@ -5,19 +5,30 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import io.swagger.v3.oas.models.servers.Server
 import io.swagger.v3.oas.models.tags.Tag
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class OpenApiConfig {
+class OpenApiConfig(
+    @param:Value("\${app.public-base-url:}") private val publicBaseUrl: String,
+) {
 
     @Bean
     fun openApi(): OpenAPI = OpenAPI()
         .info(apiInfo())
         .tags(orderedTags())
+        .also(::applyPublicServer)
         .addSecurityItem(SecurityRequirement().addList(BEARER_SCHEME))
         .components(Components().addSecuritySchemes(BEARER_SCHEME, bearerJwtScheme()))
+
+    // Если задан публичный base-URL (за nginx с TLS) - фиксируем его в servers[]
+    private fun applyPublicServer(api: OpenAPI) {
+        if (publicBaseUrl.isBlank()) return
+        api.addServersItem(Server().url(publicBaseUrl))
+    }
 
     private fun apiInfo(): Info = Info()
         .title("MeteoAPI")

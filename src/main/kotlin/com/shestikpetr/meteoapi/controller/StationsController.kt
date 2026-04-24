@@ -42,7 +42,7 @@ class StationsController(
 
     @Operation(
         summary = "Привязать станцию",
-        description = "Создаёт связь пользователь—станция по серийному номеру станции.",
+        description = "Создаёт связь пользователь-станция по серийному номеру станции.",
     )
     @PostMapping
     fun attach(
@@ -63,7 +63,7 @@ class StationsController(
 
     @Operation(
         summary = "Отвязать станцию",
-        description = "Удаляет связь пользователь—станция. Сама станция и её параметры не трогаются.",
+        description = "Удаляет связь пользователь-станция. Сама станция и её параметры не трогаются.",
     )
     @DeleteMapping("/{stationNumber}")
     fun detach(
