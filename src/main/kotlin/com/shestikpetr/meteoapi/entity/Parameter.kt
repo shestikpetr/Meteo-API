@@ -26,8 +26,4 @@ class Parameter : BaseEntity() {
 
     @Column(name = "description", columnDefinition = "text")
     var description: String? = null
-
-    @Size(max = 50)
-    @Column(name = "category", length = 50)
-    var category: String? = null
 }

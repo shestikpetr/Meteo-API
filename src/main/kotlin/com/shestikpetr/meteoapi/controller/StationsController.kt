@@ -33,7 +33,7 @@ class StationsController(
 
     @Operation(
         summary = "Список станций пользователя",
-        description = "Возвращает станции, которые пользователь привязал к своему аккаунту, с кастомным именем и флагом «избранное».",
+        description = "Возвращает станции, которые пользователь привязал к своему аккаунту, с кастомным именем.",
     )
     @GetMapping
     fun list(
@@ -52,7 +52,7 @@ class StationsController(
 
     @Operation(
         summary = "Обновить атрибуты привязки",
-        description = "Меняет customName и/или isFavorite у существующей привязки.",
+        description = "Меняет customName у существующей привязки.",
     )
     @PatchMapping("/{stationNumber}")
     fun update(

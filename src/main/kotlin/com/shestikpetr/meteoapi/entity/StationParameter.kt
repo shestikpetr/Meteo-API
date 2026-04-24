@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull
     uniqueConstraints = [
         UniqueConstraint(
             name = "unique_station_parameter",
-            columnNames = ["station_id", "parameter_code"],
+            columnNames = ["station_id", "parameter_id"],
         ),
     ],
 )
@@ -27,8 +27,9 @@ class StationParameter : BaseEntity() {
     var station: Station? = null
 
     @NotNull
-    @Column(name = "parameter_code", nullable = false)
-    var parameterCode: Int? = null
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "parameter_id", nullable = false)
+    var parameter: Parameter? = null
 
     @Column(name = "is_active", nullable = false)
     var isActive: Boolean = true

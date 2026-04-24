@@ -30,7 +30,4 @@ class UserStation : TimestampedEntity() {
     @Size(max = 100)
     @Column(name = "custom_name", length = 100)
     var customName: String? = null
-
-    @Column(name = "is_favorite", nullable = false)
-    var isFavorite: Boolean = false
 }

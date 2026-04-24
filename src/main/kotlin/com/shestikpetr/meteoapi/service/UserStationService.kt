@@ -83,7 +83,6 @@ class UserStationService(
         this.user = user
         this.station = station
         this.customName = request.customName
-        this.isFavorite = request.isFavorite
     }
 
     private fun applyUpdates(
@@ -91,6 +90,5 @@ class UserStationService(
         request: UserStationUpdateRequest,
     ) {
         if (request.customName != null) link.customName = request.customName
-        if (request.isFavorite != null) link.isFavorite = request.isFavorite
     }
 }

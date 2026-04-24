@@ -13,7 +13,6 @@ object UserStationMapper {
             userId = user.id ?: error("User без id"),
             stationId = station.id ?: error("Станция без id"),
             customName = link.customName,
-            isFavorite = link.isFavorite,
             createdAt = link.createdAt,
             updatedAt = link.updatedAt,
             station = StationMapper.toResponse(station),

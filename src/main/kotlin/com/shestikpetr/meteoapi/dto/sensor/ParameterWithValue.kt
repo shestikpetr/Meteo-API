@@ -6,5 +6,4 @@ data class ParameterWithValue(
     val value: Double? = null,
     val time: Long? = null,
     val unit: String? = null,
-    val category: String? = null,
 )

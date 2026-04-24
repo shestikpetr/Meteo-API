@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS parameters
     code        INT          NOT NULL UNIQUE,
     name        VARCHAR(100) NOT NULL,
     unit        VARCHAR(20),
-    description TEXT,
-    category    VARCHAR(50)
+    description TEXT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

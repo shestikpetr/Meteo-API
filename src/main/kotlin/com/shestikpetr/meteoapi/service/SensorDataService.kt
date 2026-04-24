@@ -68,7 +68,6 @@ class SensorDataService(
             value = point?.value,
             time = point?.time,
             unit = metadata?.unit,
-            category = metadata?.category,
         )
     }
 
@@ -79,16 +78,13 @@ class SensorDataService(
     ): StationDataResponse = StationDataResponse(
         stationNumber = station.stationNumber ?: error("Станция без stationNumber"),
         customName = link.customName,
-        isFavorite = link.isFavorite,
         location = station.location,
         latitude = station.latitude,
         longitude = station.longitude,
         parameters = values,
     )
 
-    private fun activeParameterCodes(stationNumber: String): List<Int> = stationParameterRepository
-        .findByStationStationNumberAndIsActiveTrue(stationNumber)
-        .mapNotNull { it.parameterCode }
+    private fun activeParameterCodes(stationNumber: String): List<Int> = stationParameterRepository.findActiveParameterCodesByStationNumber(stationNumber)
 
     private fun requireActiveOnStation(
         stationNumber: String,
