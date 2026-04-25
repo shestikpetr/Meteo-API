@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments/head :: head(${form.id != null} ? 'Редактирование параметра' : 'Новый параметр')}"></head>
+<body>
+<nav th:replace="~{admin/fragments/navbar :: navbar}"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:replace="~{admin/fragments/sidebar :: sidebar('parameters')}"></th:block>
+        <main class="col-md-9 col-lg-10 p-4">
+            <h1 class="h3 mb-4"
+                th:text="${form.id != null} ? 'Редактирование параметра' : 'Новый параметр'">Параметр</h1>
+
+            <form th:action="${form.id != null} ? @{|/admin/parameters/${form.id}|} : @{/admin/parameters}"
+                  th:object="${form}" method="post" novalidate>
+                <div class="mb-3">
+                    <label for="code" class="form-label">Код</label>
+                    <input type="number" class="form-control" id="code"
+                           th:field="*{code}"
+                           th:classappend="${#fields.hasErrors('code')} ? 'is-invalid'"
+                           th:readonly="${form.id != null}" required>
+                    <div class="form-text" th:if="${form.id != null}">
+                        Код параметра не редактируется после создания.
+                    </div>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('code')}"
+                         th:errors="*{code}">Ошибка</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="name"
+                           th:field="*{name}"
+                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                           maxlength="100" required>
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('name')}"
+                         th:errors="*{name}">Ошибка</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="unit" class="form-label">Единица измерения</label>
+                    <input type="text" class="form-control" id="unit"
+                           th:field="*{unit}"
+                           th:classappend="${#fields.hasErrors('unit')} ? 'is-invalid'"
+                           maxlength="20" placeholder="например, °C">
+                    <div class="invalid-feedback"
+                         th:if="${#fields.hasErrors('unit')}"
+                         th:errors="*{unit}">Ошибка</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="description" class="form-label">Описание</label>
+                    <textarea class="form-control" id="description"
+                              th:field="*{description}" rows="3"></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/admin/parameters}">Отмена</a>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+</body>
+</html>

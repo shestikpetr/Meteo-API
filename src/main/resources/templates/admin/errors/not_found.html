@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments/head :: head('Не найдено')}"></head>
+<body>
+<nav th:replace="~{admin/fragments/navbar :: navbar}"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:replace="~{admin/fragments/sidebar :: sidebar('')}"></th:block>
+        <main class="col-md-9 col-lg-10 p-4">
+            <h1 class="h3 mb-3">404 — не найдено</h1>
+            <p class="text-muted" th:text="${message}">Объект не найден.</p>
+            <a class="btn btn-outline-secondary" th:href="@{/admin}">На главную админки</a>
+        </main>
+    </div>
+</div>
+</body>
+</html>

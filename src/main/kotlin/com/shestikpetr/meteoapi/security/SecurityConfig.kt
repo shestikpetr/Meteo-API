@@ -3,6 +3,8 @@ package com.shestikpetr.meteoapi.security
 import com.shestikpetr.meteoapi.config.ApiRoutes
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
@@ -14,8 +16,10 @@ class SecurityConfig(
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
 ) {
 
+    // Цепочка для публичного REST-API
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    @Order(Ordered.LOWEST_PRECEDENCE)
+    fun apiSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         configureCommon(http)
         configureAuthorization(http)
         configureJwt(http)

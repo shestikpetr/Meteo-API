@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 // Единая точка перевода доменных и валидационных исключений
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = ["com.shestikpetr.meteoapi.controller"])
 class GlobalExceptionHandler {
 
     private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)

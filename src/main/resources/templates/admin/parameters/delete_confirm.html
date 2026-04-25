@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments/head :: head('Удаление параметра')}"></head>
+<body>
+<nav th:replace="~{admin/fragments/navbar :: navbar}"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:replace="~{admin/fragments/sidebar :: sidebar('parameters')}"></th:block>
+        <main class="col-md-9 col-lg-10 p-4">
+            <h1 class="h3 mb-4">Удаление параметра</h1>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3 text-muted">Код</div>
+                        <div class="col-sm-9 fw-bold" th:text="${impact.parameter.code}">0</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-3 text-muted">Имя</div>
+                        <div class="col-sm-9" th:text="${impact.parameter.name}">—</div>
+                    </div>
+                    <div class="row mt-2" th:if="${impact.parameter.unit}">
+                        <div class="col-sm-3 text-muted">Единица</div>
+                        <div class="col-sm-9" th:text="${impact.parameter.unit}">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(impact.affectedStations)}"
+                 class="alert alert-secondary">
+                Параметр не привязан ни к одной станции — удаление безопасное.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(impact.affectedStations)}"
+                 class="alert alert-warning">
+                <p class="mb-2">
+                    <strong>Внимание!</strong> Параметр привязан к
+                    <strong th:text="${#lists.size(impact.affectedStations)}">N</strong> станциям.
+                    При удалении эти привязки <strong>будут удалены</strong>.
+                </p>
+                <p class="mb-2">
+                    Если хотите сохранить параметр в справочнике, сначала отвяжите его от станций
+                    в разделе «Параметры станций» (раздел появится позже).
+                </p>
+                <details class="mt-2">
+                    <summary>Затронутые станции</summary>
+                    <ul class="mt-2 mb-0">
+                        <li th:each="s : ${impact.affectedStations}">
+                            <code th:text="${s.stationNumber}">SN-001</code>
+                            <span th:if="${s.name}" th:text="|— ${s.name}|"></span>
+                        </li>
+                    </ul>
+                </details>
+            </div>
+
+            <form th:action="@{|/admin/parameters/${impact.parameter.id}/delete|}"
+                  method="post" class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">Удалить</button>
+                <a class="btn btn-outline-secondary" th:href="@{/admin/parameters}">Отмена</a>
+            </form>
+        </main>
+    </div>
+</div>
+</body>
+</html>

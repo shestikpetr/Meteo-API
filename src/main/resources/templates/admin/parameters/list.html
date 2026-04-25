@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments/head :: head('Параметры')}"></head>
+<body>
+<nav th:replace="~{admin/fragments/navbar :: navbar}"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:replace="~{admin/fragments/sidebar :: sidebar('parameters')}"></th:block>
+        <main class="col-md-9 col-lg-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h3 m-0">Параметры</h1>
+                <a class="btn btn-primary" th:href="@{/admin/parameters/new}">+ Добавить</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(parameters)}" class="alert alert-info">
+                Параметров пока нет. Нажмите «Добавить», чтобы создать первый.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(parameters)}" class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th style="width: 90px;">Код</th>
+                            <th>Имя</th>
+                            <th style="width: 100px;">Единица</th>
+                            <th>Описание</th>
+                            <th style="width: 140px;">Используется</th>
+                            <th style="width: 180px;" class="text-end">Действия</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="p : ${parameters}">
+                            <td th:text="${p.code}">123</td>
+                            <td th:text="${p.name}">Температура воздуха</td>
+                            <td th:text="${p.unit} ?: '—'" class="text-muted">°C</td>
+                            <td th:text="${p.description} ?: '—'" class="text-muted small">—</td>
+                            <td>
+                                <span class="badge bg-secondary"
+                                      th:text="|на ${p.stationCount} станциях|">на 0 станциях</span>
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   th:href="@{|/admin/parameters/${p.id}/edit|}">Изменить</a>
+                                <a class="btn btn-sm btn-outline-danger"
+                                   th:href="@{|/admin/parameters/${p.id}/delete-confirm|}">Удалить</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
