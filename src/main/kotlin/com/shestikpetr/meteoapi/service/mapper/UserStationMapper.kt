@@ -7,15 +7,13 @@ object UserStationMapper {
 
     fun toResponse(link: UserStation): UserStationResponse {
         val station = link.station ?: error("UserStation без station")
-        val user = link.user ?: error("UserStation без user")
         return UserStationResponse(
-            id = link.id ?: error("UserStation без id"),
-            userId = user.id ?: error("User без id"),
-            stationId = station.id ?: error("Станция без id"),
-            customName = link.customName,
-            createdAt = link.createdAt,
-            updatedAt = link.updatedAt,
-            station = StationMapper.toResponse(station),
+            stationNumber = station.stationNumber ?: error("Станция без stationNumber"),
+            name = link.customName?.takeIf { it.isNotBlank() } ?: (station.name ?: error("Станция без name")),
+            location = station.location,
+            latitude = station.latitude,
+            longitude = station.longitude,
+            altitude = station.altitude,
         )
     }
 }

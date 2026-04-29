@@ -4,6 +4,7 @@ import com.shestikpetr.meteoapi.dto.auth.AuthLoginData
 import com.shestikpetr.meteoapi.dto.auth.ChangePasswordRequest
 import com.shestikpetr.meteoapi.dto.auth.RefreshTokenData
 import com.shestikpetr.meteoapi.dto.auth.RefreshTokenRequest
+import com.shestikpetr.meteoapi.dto.auth.Tokens
 import com.shestikpetr.meteoapi.dto.auth.UpdateMeRequest
 import com.shestikpetr.meteoapi.dto.auth.UserLoginRequest
 import com.shestikpetr.meteoapi.dto.auth.UserRegisterRequest
@@ -95,13 +96,9 @@ class AuthService(
         .orElseThrow { NotFoundException("Пользователь не найден") }
 
     private fun toUserResponse(user: User): UserResponse = UserResponse(
-        id = user.id!!,
         username = user.username!!,
         email = user.email!!,
         role = user.role,
-        isActive = user.isActive,
-        createdAt = user.createdAt,
-        updatedAt = user.updatedAt,
     )
 
     private fun requireUniqueCredentials(request: UserRegisterRequest) {
@@ -154,11 +151,12 @@ class AuthService(
     }
 
     private fun issueLoginData(user: User): AuthLoginData = AuthLoginData(
-        userId = user.id!!,
-        username = user.username!!,
-        accessToken = newAccessToken(user),
-        refreshToken = jwtService.generateRefreshToken(user.id!!),
-        expiresIn = jwtService.accessTokenTtlSeconds,
+        user = toUserResponse(user),
+        tokens = Tokens(
+            accessToken = newAccessToken(user),
+            refreshToken = jwtService.generateRefreshToken(user.id!!),
+            expiresIn = jwtService.accessTokenTtlSeconds,
+        ),
     )
 
     private fun newAccessToken(user: User): String = jwtService.generateAccessToken(user.id!!, user.username!!, user.role)

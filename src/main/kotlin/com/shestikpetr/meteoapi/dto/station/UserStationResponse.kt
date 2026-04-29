@@ -1,13 +1,12 @@
 package com.shestikpetr.meteoapi.dto.station
 
-import java.time.Instant
+import java.math.BigDecimal
 
 data class UserStationResponse(
-    val id: Int,
-    val userId: Int,
-    val stationId: Int,
-    val customName: String? = null,
-    val createdAt: Instant? = null,
-    val updatedAt: Instant? = null,
-    val station: StationResponse? = null,
+    val stationNumber: String,
+    val name: String,
+    val location: String? = null,
+    val latitude: BigDecimal? = null,
+    val longitude: BigDecimal? = null,
+    val altitude: BigDecimal? = null,
 )

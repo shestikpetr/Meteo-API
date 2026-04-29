@@ -21,8 +21,7 @@ class StationParametersService(
         stationNumber: String,
     ): StationParametersResponse {
         accessControlService.requireAccess(userId, stationNumber)
-        val metadata = loadActiveMetadata(stationNumber)
-        return StationParametersResponse(stationNumber = stationNumber, parameters = metadata)
+        return StationParametersResponse(parameters = loadActiveMetadata(stationNumber))
     }
 
     private fun loadActiveMetadata(stationNumber: String): List<ParameterMetadata> {

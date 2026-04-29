@@ -34,8 +34,8 @@ class SensorDataService(
         val activeCodes = activeParameterCodes(stationNumber)
         val metadata = parameterRepository.findAllByCodeIn(activeCodes).associateBy { it.requireCode() }
         val latestRow = if (activeCodes.isEmpty()) null else sensorRepository.findLatestRow(stationNumber, activeCodes)
-        val values = activeCodes.map { code -> buildParameterWithValue(code, metadata[code], latestRow?.time, latestRow?.values?.get(code)) }
-        return buildStationDataResponse(link, station, values)
+        val values = activeCodes.map { code -> buildParameterWithValue(code, metadata[code], latestRow?.values?.get(code)) }
+        return buildStationDataResponse(link, station, latestRow?.time, values)
     }
 
     fun history(
@@ -52,7 +52,6 @@ class SensorDataService(
             ?: throw NotFoundException("Параметр $parameterCode не найден")
         val series = loadSeries(stationNumber, parameterCode, startTime, endTime)
         return ParameterHistoryResponse(
-            stationNumber = stationNumber,
             parameter = ParameterMapper.toMetadata(parameter),
             data = series,
         )
@@ -75,13 +74,11 @@ class SensorDataService(
     private fun buildParameterWithValue(
         code: Int,
         metadata: Parameter?,
-        rowTime: Long?,
         value: Double?,
     ): ParameterWithValue = ParameterWithValue(
         code = code,
         name = metadata?.name ?: code.toString(),
         value = value,
-        time = if (value != null) rowTime else null,
         unit = metadata?.unit,
         description = metadata?.description,
     )
@@ -89,13 +86,15 @@ class SensorDataService(
     private fun buildStationDataResponse(
         link: UserStation,
         station: Station,
+        time: Long?,
         values: List<ParameterWithValue>,
     ): StationDataResponse = StationDataResponse(
         stationNumber = station.stationNumber ?: error("Станция без stationNumber"),
-        customName = link.customName,
+        name = link.customName?.takeIf { it.isNotBlank() } ?: (station.name ?: error("Станция без name")),
         location = station.location,
         latitude = station.latitude,
         longitude = station.longitude,
+        time = time,
         parameters = values,
     )
 
