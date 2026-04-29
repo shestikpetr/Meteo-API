@@ -51,7 +51,9 @@ class SecurityConfig(
 
     private companion object {
         val PUBLIC_PATHS = arrayOf(
-            "${ApiRoutes.AUTH}/**",
+            "${ApiRoutes.AUTH}/register",
+            "${ApiRoutes.AUTH}/login",
+            "${ApiRoutes.AUTH}/refresh",
             "/health",
             "/actuator/health",
             "/actuator/info",
