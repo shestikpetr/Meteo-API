@@ -3,6 +3,7 @@ package com.shestikpetr.meteoapi.service
 import com.shestikpetr.meteoapi.dto.sensor.ParameterHistoryResponse
 import com.shestikpetr.meteoapi.dto.sensor.ParameterWithValue
 import com.shestikpetr.meteoapi.dto.sensor.StationDataResponse
+import com.shestikpetr.meteoapi.dto.sensor.TimeSeriesPoint
 import com.shestikpetr.meteoapi.entity.Parameter
 import com.shestikpetr.meteoapi.entity.Station
 import com.shestikpetr.meteoapi.entity.UserStation
@@ -32,7 +33,8 @@ class SensorDataService(
         val station = link.station ?: error("UserStation без station")
         val activeCodes = activeParameterCodes(stationNumber)
         val metadata = parameterRepository.findAllByCodeIn(activeCodes).associateBy { it.requireCode() }
-        val values = activeCodes.map { code -> buildParameterWithValue(stationNumber, code, metadata[code]) }
+        val latestRow = if (activeCodes.isEmpty()) null else sensorRepository.findLatestRow(stationNumber, activeCodes)
+        val values = activeCodes.map { code -> buildParameterWithValue(code, metadata[code], latestRow?.time, latestRow?.values?.get(code)) }
         return buildStationDataResponse(link, station, values)
     }
 
@@ -48,7 +50,7 @@ class SensorDataService(
         requireValidTimeRange(startTime, endTime)
         val parameter = parameterRepository.findByCode(parameterCode)
             ?: throw NotFoundException("Параметр $parameterCode не найден")
-        val series = sensorRepository.findTimeSeries(stationNumber, parameterCode, startTime, endTime)
+        val series = loadSeries(stationNumber, parameterCode, startTime, endTime)
         return ParameterHistoryResponse(
             stationNumber = stationNumber,
             parameter = ParameterMapper.toMetadata(parameter),
@@ -56,21 +58,33 @@ class SensorDataService(
         )
     }
 
-    private fun buildParameterWithValue(
+    // Без startTime/endTime отдаём одну последнюю точку
+    private fun loadSeries(
         stationNumber: String,
+        parameterCode: Int,
+        startTime: Long?,
+        endTime: Long?,
+    ): List<TimeSeriesPoint> {
+        if (startTime == null && endTime == null) {
+            val point = sensorRepository.findLatestPoint(stationNumber, parameterCode)
+            return listOfNotNull(point)
+        }
+        return sensorRepository.findTimeSeries(stationNumber, parameterCode, startTime, endTime)
+    }
+
+    private fun buildParameterWithValue(
         code: Int,
         metadata: Parameter?,
-    ): ParameterWithValue {
-        val point = sensorRepository.findLatestPoint(stationNumber, code)
-        return ParameterWithValue(
-            code = code,
-            name = metadata?.name ?: code.toString(),
-            value = point?.value,
-            time = point?.time,
-            unit = metadata?.unit,
-            description = metadata?.description,
-        )
-    }
+        rowTime: Long?,
+        value: Double?,
+    ): ParameterWithValue = ParameterWithValue(
+        code = code,
+        name = metadata?.name ?: code.toString(),
+        value = value,
+        time = if (value != null) rowTime else null,
+        unit = metadata?.unit,
+        description = metadata?.description,
+    )
 
     private fun buildStationDataResponse(
         link: UserStation,
