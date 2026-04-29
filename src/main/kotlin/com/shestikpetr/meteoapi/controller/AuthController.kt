@@ -13,6 +13,7 @@ import com.shestikpetr.meteoapi.dto.auth.UserResponse
 import com.shestikpetr.meteoapi.dto.common.ApiResponse
 import com.shestikpetr.meteoapi.security.UserPrincipal
 import com.shestikpetr.meteoapi.service.AuthService
+import com.shestikpetr.meteoapi.service.UserAccountService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityRequirements
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(ApiRoutes.AUTH)
 class AuthController(
     private val authService: AuthService,
+    private val userAccountService: UserAccountService,
 ) {
 
     @Operation(
@@ -71,7 +73,7 @@ class AuthController(
     @GetMapping("/me")
     fun me(
         @AuthenticationPrincipal principal: UserPrincipal,
-    ): ApiResponse<UserResponse> = ApiResponse.ok(authService.me(principal.userId))
+    ): ApiResponse<UserResponse> = ApiResponse.ok(userAccountService.me(principal.userId))
 
     @Operation(
         summary = "Изменение профиля",
@@ -82,7 +84,7 @@ class AuthController(
     fun updateMe(
         @AuthenticationPrincipal principal: UserPrincipal,
         @Valid @RequestBody request: UpdateMeRequest,
-    ): ApiResponse<UserResponse> = ApiResponse.ok(authService.updateMe(principal.userId, request))
+    ): ApiResponse<UserResponse> = ApiResponse.ok(userAccountService.updateMe(principal.userId, request))
 
     @Operation(
         summary = "Смена пароля",
@@ -95,7 +97,7 @@ class AuthController(
         @AuthenticationPrincipal principal: UserPrincipal,
         @Valid @RequestBody request: ChangePasswordRequest,
     ): ApiResponse<Unit> {
-        authService.changePassword(principal.userId, request)
+        userAccountService.changePassword(principal.userId, request)
         return ApiResponse.ok(Unit)
     }
 
