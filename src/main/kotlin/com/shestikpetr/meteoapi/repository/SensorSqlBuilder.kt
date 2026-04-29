@@ -20,10 +20,8 @@ class SensorSqlBuilder(
         return code.toString()
     }
 
-    fun latestRowSql(table: String, columns: List<String>): String {
-        val cols = columns.joinToString(", ") { "`$it`" }
-        return "SELECT time, $cols FROM `$table` ORDER BY time DESC LIMIT 1"
-    }
+    // SELECT * — клиент по метаданным ResultSet сам разберёт, какие колонки пришли
+    fun latestRowSql(table: String): String = "SELECT * FROM `$table` ORDER BY time DESC LIMIT 1"
 
     fun latestPointSql(table: String, column: String): String =
         """
