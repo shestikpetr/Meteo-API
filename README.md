@@ -4,7 +4,7 @@ REST API для доступа к метеоданным: пользовател
 
 ## Стек
 
-- **Spring Boot 4.0.5**, **Kotlin 2.3.20**, **JVM 25**
+- **Spring Boot 4.0.5**, **Kotlin 2.3.20**, **JDK 25**
 - **Spring MVC** + **Spring Security** + **JWT** (jjwt 0.12.6)
 - **Spring Data JPA** (Hibernate) для локальной БД, **JdbcClient** для sensor-БД
 - **MySQL 8**, **Flyway** для миграций
