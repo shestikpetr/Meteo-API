@@ -1,0 +1,48 @@
+# DeployHub / Dokploy: переменные задаются в UI, не через env_file.
+# Путь к compose-файлу: ./docker-compose.deployhub.yml
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${LOCAL_DB_NAME}
+      MYSQL_USER: ${LOCAL_DB_USER}
+      MYSQL_PASSWORD: ${LOCAL_DB_PASSWORD}
+    volumes:
+      - meteo-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      LOCAL_DB_HOST: mysql
+      LOCAL_DB_PORT: "3306"
+      LOCAL_DB_NAME: ${LOCAL_DB_NAME}
+      LOCAL_DB_USER: ${LOCAL_DB_USER}
+      LOCAL_DB_PASSWORD: ${LOCAL_DB_PASSWORD}
+      SENSOR_DB_HOST: ${SENSOR_DB_HOST}
+      SENSOR_DB_PORT: ${SENSOR_DB_PORT}
+      SENSOR_DB_NAME: ${SENSOR_DB_NAME}
+      SENSOR_DB_USER: ${SENSOR_DB_USER}
+      SENSOR_DB_PASSWORD: ${SENSOR_DB_PASSWORD}
+      SENSOR_DB_USE_SSL: ${SENSOR_DB_USE_SSL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL}
+      SERVER_PORT: ${SERVER_PORT}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+
+volumes:
+  meteo-mysql-data:
