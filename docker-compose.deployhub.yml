@@ -44,5 +44,12 @@ services:
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
 
+  adminer:
+    image: adminer:4
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+
 volumes:
   meteo-mysql-data:

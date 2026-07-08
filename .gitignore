@@ -43,3 +43,4 @@ out/
 .env
 .env.local
 .env.*.local
+/docs/projector/
